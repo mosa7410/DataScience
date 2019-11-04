@@ -1,0 +1,213 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 100%;
+            height: 750px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+        #loadingBar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width: 100%;
+            height: 750px;
+            background-color:rgba(200,200,200,0.8);
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            opacity:1;
+        }
+
+        #bar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width:20px;
+            height:20px;
+            margin:auto auto auto auto;
+            border-radius:11px;
+            border:2px solid rgba(30,30,30,0.05);
+            background: rgb(0, 173, 246); /* Old browsers */
+            box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+        }
+
+        #border {
+            position:absolute;
+            top:10px;
+            left:10px;
+            width:500px;
+            height:23px;
+            margin:auto auto auto auto;
+            box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+            border-radius:10px;
+        }
+
+        #text {
+            position:absolute;
+            top:8px;
+            left:530px;
+            width:30px;
+            height:50px;
+            margin:auto auto auto auto;
+            font-size:22px;
+            color: #000000;
+        }
+
+        div.outerBorder {
+            position:relative;
+            top:400px;
+            width:600px;
+            height:44px;
+            margin:auto auto auto auto;
+            border:8px solid rgba(0,0,0,0.1);
+            background: rgb(252,252,252); /* Old browsers */
+            background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+            border-radius:72px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        }
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+<div id="loadingBar">
+    <div class="outerBorder">
+        <div id="text">0%</div>
+        <div id="border">
+            <div id="bar"></div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"id": "161967", "label": "161967", "shape": "dot", "title": "161967 Neighbors:\u003cbr\u003e793\u003cbr\u003e686\u003cbr\u003e1656\u003cbr\u003e1353\u003cbr\u003e2932\u003cbr\u003e1511\u003cbr\u003e982", "value": 7}, {"id": "793", "label": "793", "shape": "dot", "title": "793 Neighbors:\u003cbr\u003e39841\u003cbr\u003e47414\u003cbr\u003e161967\u003cbr\u003e121922\u003cbr\u003e65674\u003cbr\u003e62328\u003cbr\u003e15899\u003cbr\u003e157297\u003cbr\u003e81128\u003cbr\u003e35901\u003cbr\u003e37380\u003cbr\u003e146469\u003cbr\u003e101901\u003cbr\u003e52548\u003cbr\u003e72562\u003cbr\u003e59845\u003cbr\u003e19500\u003cbr\u003e48747\u003cbr\u003e93728\u003cbr\u003e137952", "value": 20}, {"id": "686", "label": "686", "shape": "dot", "title": "686 Neighbors:\u003cbr\u003e73376\u003cbr\u003e166092\u003cbr\u003e129051\u003cbr\u003e89606\u003cbr\u003e53741\u003cbr\u003e64918\u003cbr\u003e75724\u003cbr\u003e144280\u003cbr\u003e161967\u003cbr\u003e153580\u003cbr\u003e67034\u003cbr\u003e52074\u003cbr\u003e109778", "value": 13}, {"id": "1656", "label": "1656", "shape": "dot", "title": "1656 Neighbors:\u003cbr\u003e113353\u003cbr\u003e106547\u003cbr\u003e89361\u003cbr\u003e45919\u003cbr\u003e161967\u003cbr\u003e120102", "value": 6}, {"id": "1353", "label": "1353", "shape": "dot", "title": "1353 Neighbors:\u003cbr\u003e132996\u003cbr\u003e161967\u003cbr\u003e175322\u003cbr\u003e91434\u003cbr\u003e130966", "value": 5}, {"id": "982", "label": "982", "shape": "dot", "title": "982 Neighbors:\u003cbr\u003e161967\u003cbr\u003e129394", "value": 2}, {"id": "2932", "label": "2932", "shape": "dot", "title": "2932 Neighbors:\u003cbr\u003e161967", "value": 1}, {"id": "1511", "label": "1511", "shape": "dot", "title": "1511 Neighbors:\u003cbr\u003e161967", "value": 1}, {"id": "167651", "label": "167651", "shape": "dot", "title": "167651 Neighbors:\u003cbr\u003e693\u003cbr\u003e151\u003cbr\u003e2623\u003cbr\u003e2392\u003cbr\u003e3351", "value": 5}, {"id": "2623", "label": "2623", "shape": "dot", "title": "2623 Neighbors:\u003cbr\u003e74315\u003cbr\u003e122195\u003cbr\u003e153651\u003cbr\u003e94775\u003cbr\u003e83893\u003cbr\u003e106547\u003cbr\u003e58085\u003cbr\u003e89606\u003cbr\u003e85578\u003cbr\u003e51317\u003cbr\u003e122984\u003cbr\u003e93756\u003cbr\u003e124013\u003cbr\u003e68616\u003cbr\u003e167651\u003cbr\u003e75396\u003cbr\u003e83084", "value": 17}, {"id": "151", "label": "151", "shape": "dot", "title": "151 Neighbors:\u003cbr\u003e73376\u003cbr\u003e129392\u003cbr\u003e153642\u003cbr\u003e88225\u003cbr\u003e160749\u003cbr\u003e167651\u003cbr\u003e105501\u003cbr\u003e67769", "value": 8}, {"id": "2392", "label": "2392", "shape": "dot", "title": "2392 Neighbors:\u003cbr\u003e167651", "value": 1}, {"id": "693", "label": "693", "shape": "dot", "title": "693 Neighbors:\u003cbr\u003e167651\u003cbr\u003e180169\u003cbr\u003e160749", "value": 3}, {"id": "3351", "label": "3351", "shape": "dot", "title": "3351 Neighbors:\u003cbr\u003e167651", "value": 1}, {"id": "175322", "label": "175322", "shape": "dot", "title": "175322 Neighbors:\u003cbr\u003e3027\u003cbr\u003e249\u003cbr\u003e1353\u003cbr\u003e3200", "value": 4}, {"id": "3027", "label": "3027", "shape": "dot", "title": "3027 Neighbors:\u003cbr\u003e175322", "value": 1}, {"id": "249", "label": "249", "shape": "dot", "title": "249 Neighbors:\u003cbr\u003e72712\u003cbr\u003e175322", "value": 2}, {"id": "3200", "label": "3200", "shape": "dot", "title": "3200 Neighbors:\u003cbr\u003e158191\u003cbr\u003e173884\u003cbr\u003e60753\u003cbr\u003e50176\u003cbr\u003e75395\u003cbr\u003e93028\u003cbr\u003e51083\u003cbr\u003e52072\u003cbr\u003e88489\u003cbr\u003e51957\u003cbr\u003e152624\u003cbr\u003e100399\u003cbr\u003e175322\u003cbr\u003e65067\u003cbr\u003e152170\u003cbr\u003e150637\u003cbr\u003e151241", "value": 17}, {"id": "156464", "label": "156464", "shape": "dot", "title": "156464 Neighbors:\u003cbr\u003e1730\u003cbr\u003e2862\u003cbr\u003e11\u003cbr\u003e2685", "value": 4}, {"id": "1730", "label": "1730", "shape": "dot", "title": "1730 Neighbors:\u003cbr\u003e156464", "value": 1}, {"id": "11", "label": "11", "shape": "dot", "title": "11 Neighbors:\u003cbr\u003e156464", "value": 1}, {"id": "2685", "label": "2685", "shape": "dot", "title": "2685 Neighbors:\u003cbr\u003e156464", "value": 1}, {"id": "2862", "label": "2862", "shape": "dot", "title": "2862 Neighbors:\u003cbr\u003e156464", "value": 1}, {"id": "130966", "label": "130966", "shape": "dot", "title": "130966 Neighbors:\u003cbr\u003e2928\u003cbr\u003e1122\u003cbr\u003e1926\u003cbr\u003e1101\u003cbr\u003e1353\u003cbr\u003e1121\u003cbr\u003e1345", "value": 7}, {"id": "1926", "label": "1926", "shape": "dot", "title": "1926 Neighbors:\u003cbr\u003e92971\u003cbr\u003e93028\u003cbr\u003e122133\u003cbr\u003e74893\u003cbr\u003e137952\u003cbr\u003e67034\u003cbr\u003e130966\u003cbr\u003e75413", "value": 8}, {"id": "2928", "label": "2928", "shape": "dot", "title": "2928 Neighbors:\u003cbr\u003e52072\u003cbr\u003e70910\u003cbr\u003e124234\u003cbr\u003e45921\u003cbr\u003e91434\u003cbr\u003e119962\u003cbr\u003e103602\u003cbr\u003e130966\u003cbr\u003e86377\u003cbr\u003e75413", "value": 10}, {"id": "1101", "label": "1101", "shape": "dot", "title": "1101 Neighbors:\u003cbr\u003e78161\u003cbr\u003e139700\u003cbr\u003e154366\u003cbr\u003e117281\u003cbr\u003e117774\u003cbr\u003e97672\u003cbr\u003e104612\u003cbr\u003e93727\u003cbr\u003e169347\u003cbr\u003e177967\u003cbr\u003e160749\u003cbr\u003e93090\u003cbr\u003e152156\u003cbr\u003e96387\u003cbr\u003e130765\u003cbr\u003e167697\u003cbr\u003e85579\u003cbr\u003e166610\u003cbr\u003e161242\u003cbr\u003e174835\u003cbr\u003e130966", "value": 21}, {"id": "1122", "label": "1122", "shape": "dot", "title": "1122 Neighbors:\u003cbr\u003e146506\u003cbr\u003e130966", "value": 2}, {"id": "1345", "label": "1345", "shape": "dot", "title": "1345 Neighbors:\u003cbr\u003e158112\u003cbr\u003e130966", "value": 2}, {"id": "1121", "label": "1121", "shape": "dot", "title": "1121 Neighbors:\u003cbr\u003e146459\u003cbr\u003e130966", "value": 2}, {"id": "177483", "label": "177483", "shape": "dot", "title": "177483 Neighbors:\u003cbr\u003e1250\u003cbr\u003e1282", "value": 2}, {"id": "1250", "label": "1250", "shape": "dot", "title": "1250 Neighbors:\u003cbr\u003e65991\u003cbr\u003e82080\u003cbr\u003e37380\u003cbr\u003e154449\u003cbr\u003e87232\u003cbr\u003e27219\u003cbr\u003e177483\u003cbr\u003e146485\u003cbr\u003e34093", "value": 9}, {"id": "1282", "label": "1282", "shape": "dot", "title": "1282 Neighbors:\u003cbr\u003e177483", "value": 1}, {"id": "174065", "label": "174065", "shape": "dot", "title": "174065 Neighbors:\u003cbr\u003e984\u003cbr\u003e1601", "value": 2}, {"id": "984", "label": "984", "shape": "dot", "title": "984 Neighbors:\u003cbr\u003e134895\u003cbr\u003e164172\u003cbr\u003e174065\u003cbr\u003e146485\u003cbr\u003e89667", "value": 5}, {"id": "1601", "label": "1601", "shape": "dot", "title": "1601 Neighbors:\u003cbr\u003e174065\u003cbr\u003e159877", "value": 2}, {"id": "37886", "label": "37886", "shape": "dot", "title": "37886 Neighbors:\u003cbr\u003e2921\u003cbr\u003e1718\u003cbr\u003e3246\u003cbr\u003e797", "value": 4}, {"id": "1718", "label": "1718", "shape": "dot", "title": "1718 Neighbors:\u003cbr\u003e37886", "value": 1}, {"id": "797", "label": "797", "shape": "dot", "title": "797 Neighbors:\u003cbr\u003e37886", "value": 1}, {"id": "2921", "label": "2921", "shape": "dot", "title": "2921 Neighbors:\u003cbr\u003e37886\u003cbr\u003e136034\u003cbr\u003e74123", "value": 3}, {"id": "3246", "label": "3246", "shape": "dot", "title": "3246 Neighbors:\u003cbr\u003e37886", "value": 1}, {"id": "154449", "label": "154449", "shape": "dot", "title": "154449 Neighbors:\u003cbr\u003e3287\u003cbr\u003e1250\u003cbr\u003e1186\u003cbr\u003e672", "value": 4}, {"id": "3287", "label": "3287", "shape": "dot", "title": "3287 Neighbors:\u003cbr\u003e158191\u003cbr\u003e154449", "value": 2}, {"id": "672", "label": "672", "shape": "dot", "title": "672 Neighbors:\u003cbr\u003e144314\u003cbr\u003e158178\u003cbr\u003e163608\u003cbr\u003e153642\u003cbr\u003e154449\u003cbr\u003e122457\u003cbr\u003e146469\u003cbr\u003e164173", "value": 8}, {"id": "1186", "label": "1186", "shape": "dot", "title": "1186 Neighbors:\u003cbr\u003e154449", "value": 1}, {"id": "163788", "label": "163788", "shape": "dot", "title": "163788 Neighbors:\u003cbr\u003e1261\u003cbr\u003e3387\u003cbr\u003e2872", "value": 3}, {"id": "2872", "label": "2872", "shape": "dot", "title": "2872 Neighbors:\u003cbr\u003e163788", "value": 1}, {"id": "3387", "label": "3387", "shape": "dot", "title": "3387 Neighbors:\u003cbr\u003e163788\u003cbr\u003e126032\u003cbr\u003e38420\u003cbr\u003e17416\u003cbr\u003e90597\u003cbr\u003e64191\u003cbr\u003e51807\u003cbr\u003e68944\u003cbr\u003e34486\u003cbr\u003e19521\u003cbr\u003e40034", "value": 11}, {"id": "1261", "label": "1261", "shape": "dot", "title": "1261 Neighbors:\u003cbr\u003e163788\u003cbr\u003e143490", "value": 2}, {"id": "47414", "label": "47414", "shape": "dot", "title": "47414 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "62328", "label": "62328", "shape": "dot", "title": "62328 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "121922", "label": "121922", "shape": "dot", "title": "121922 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "157297", "label": "157297", "shape": "dot", "title": "157297 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "39841", "label": "39841", "shape": "dot", "title": "39841 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "65674", "label": "65674", "shape": "dot", "title": "65674 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "59845", "label": "59845", "shape": "dot", "title": "59845 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "48747", "label": "48747", "shape": "dot", "title": "48747 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "93728", "label": "93728", "shape": "dot", "title": "93728 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "72562", "label": "72562", "shape": "dot", "title": "72562 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "35901", "label": "35901", "shape": "dot", "title": "35901 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "37380", "label": "37380", "shape": "dot", "title": "37380 Neighbors:\u003cbr\u003e1250\u003cbr\u003e793", "value": 2}, {"id": "19500", "label": "19500", "shape": "dot", "title": "19500 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "15899", "label": "15899", "shape": "dot", "title": "15899 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "146469", "label": "146469", "shape": "dot", "title": "146469 Neighbors:\u003cbr\u003e672\u003cbr\u003e793", "value": 2}, {"id": "52548", "label": "52548", "shape": "dot", "title": "52548 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "101901", "label": "101901", "shape": "dot", "title": "101901 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "137952", "label": "137952", "shape": "dot", "title": "137952 Neighbors:\u003cbr\u003e1926\u003cbr\u003e793", "value": 2}, {"id": "81128", "label": "81128", "shape": "dot", "title": "81128 Neighbors:\u003cbr\u003e793", "value": 1}, {"id": "166092", "label": "166092", "shape": "dot", "title": "166092 Neighbors:\u003cbr\u003e686", "value": 1}, {"id": "109778", "label": "109778", "shape": "dot", "title": "109778 Neighbors:\u003cbr\u003e686", "value": 1}, {"id": "89606", "label": "89606", "shape": "dot", "title": "89606 Neighbors:\u003cbr\u003e686\u003cbr\u003e2623", "value": 2}, {"id": "64918", "label": "64918", "shape": "dot", "title": "64918 Neighbors:\u003cbr\u003e686", "value": 1}, {"id": "52074", "label": "52074", "shape": "dot", "title": "52074 Neighbors:\u003cbr\u003e686", "value": 1}, {"id": "73376", "label": "73376", "shape": "dot", "title": "73376 Neighbors:\u003cbr\u003e686\u003cbr\u003e151", "value": 2}, {"id": "53741", "label": "53741", "shape": "dot", "title": "53741 Neighbors:\u003cbr\u003e686", "value": 1}, {"id": "75724", "label": "75724", "shape": "dot", "title": "75724 Neighbors:\u003cbr\u003e686", "value": 1}, {"id": "67034", "label": "67034", "shape": "dot", "title": "67034 Neighbors:\u003cbr\u003e686\u003cbr\u003e1926", "value": 2}, {"id": "129051", "label": "129051", "shape": "dot", "title": "129051 Neighbors:\u003cbr\u003e686", "value": 1}, {"id": "144280", "label": "144280", "shape": "dot", "title": "144280 Neighbors:\u003cbr\u003e686", "value": 1}, {"id": "153580", "label": "153580", "shape": "dot", "title": "153580 Neighbors:\u003cbr\u003e686", "value": 1}, {"id": "120102", "label": "120102", "shape": "dot", "title": "120102 Neighbors:\u003cbr\u003e1656", "value": 1}, {"id": "45919", "label": "45919", "shape": "dot", "title": "45919 Neighbors:\u003cbr\u003e1656", "value": 1}, {"id": "113353", "label": "113353", "shape": "dot", "title": "113353 Neighbors:\u003cbr\u003e1656", "value": 1}, {"id": "106547", "label": "106547", "shape": "dot", "title": "106547 Neighbors:\u003cbr\u003e2623\u003cbr\u003e1656", "value": 2}, {"id": "89361", "label": "89361", "shape": "dot", "title": "89361 Neighbors:\u003cbr\u003e1656", "value": 1}, {"id": "91434", "label": "91434", "shape": "dot", "title": "91434 Neighbors:\u003cbr\u003e2928\u003cbr\u003e1353", "value": 2}, {"id": "132996", "label": "132996", "shape": "dot", "title": "132996 Neighbors:\u003cbr\u003e1353", "value": 1}, {"id": "129394", "label": "129394", "shape": "dot", "title": "129394 Neighbors:\u003cbr\u003e982", "value": 1}, {"id": "122984", "label": "122984", "shape": "dot", "title": "122984 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "122195", "label": "122195", "shape": "dot", "title": "122195 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "93756", "label": "93756", "shape": "dot", "title": "93756 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "74315", "label": "74315", "shape": "dot", "title": "74315 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "51317", "label": "51317", "shape": "dot", "title": "51317 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "153651", "label": "153651", "shape": "dot", "title": "153651 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "124013", "label": "124013", "shape": "dot", "title": "124013 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "94775", "label": "94775", "shape": "dot", "title": "94775 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "83893", "label": "83893", "shape": "dot", "title": "83893 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "85578", "label": "85578", "shape": "dot", "title": "85578 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "83084", "label": "83084", "shape": "dot", "title": "83084 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "68616", "label": "68616", "shape": "dot", "title": "68616 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "58085", "label": "58085", "shape": "dot", "title": "58085 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "75396", "label": "75396", "shape": "dot", "title": "75396 Neighbors:\u003cbr\u003e2623", "value": 1}, {"id": "153642", "label": "153642", "shape": "dot", "title": "153642 Neighbors:\u003cbr\u003e672\u003cbr\u003e151", "value": 2}, {"id": "105501", "label": "105501", "shape": "dot", "title": "105501 Neighbors:\u003cbr\u003e151", "value": 1}, {"id": "88225", "label": "88225", "shape": "dot", "title": "88225 Neighbors:\u003cbr\u003e151", "value": 1}, {"id": "160749", "label": "160749", "shape": "dot", "title": "160749 Neighbors:\u003cbr\u003e693\u003cbr\u003e1101\u003cbr\u003e151", "value": 3}, {"id": "129392", "label": "129392", "shape": "dot", "title": "129392 Neighbors:\u003cbr\u003e151", "value": 1}, {"id": "67769", "label": "67769", "shape": "dot", "title": "67769 Neighbors:\u003cbr\u003e151", "value": 1}, {"id": "180169", "label": "180169", "shape": "dot", "title": "180169 Neighbors:\u003cbr\u003e693", "value": 1}, {"id": "72712", "label": "72712", "shape": "dot", "title": "72712 Neighbors:\u003cbr\u003e249", "value": 1}, {"id": "60753", "label": "60753", "shape": "dot", "title": "60753 Neighbors:\u003cbr\u003e3200", "value": 1}, {"id": "151241", "label": "151241", "shape": "dot", "title": "151241 Neighbors:\u003cbr\u003e3200", "value": 1}, {"id": "158191", "label": "158191", "shape": "dot", "title": "158191 Neighbors:\u003cbr\u003e3200\u003cbr\u003e3287", "value": 2}, {"id": "100399", "label": "100399", "shape": "dot", "title": "100399 Neighbors:\u003cbr\u003e3200", "value": 1}, {"id": "52072", "label": "52072", "shape": "dot", "title": "52072 Neighbors:\u003cbr\u003e2928\u003cbr\u003e3200", "value": 2}, {"id": "65067", "label": "65067", "shape": "dot", "title": "65067 Neighbors:\u003cbr\u003e3200", "value": 1}, {"id": "150637", "label": "150637", "shape": "dot", "title": "150637 Neighbors:\u003cbr\u003e3200", "value": 1}, {"id": "50176", "label": "50176", "shape": "dot", "title": "50176 Neighbors:\u003cbr\u003e3200", "value": 1}, {"id": "152170", "label": "152170", "shape": "dot", "title": "152170 Neighbors:\u003cbr\u003e3200", "value": 1}, {"id": "51957", "label": "51957", "shape": "dot", "title": "51957 Neighbors:\u003cbr\u003e3200", "value": 1}, {"id": "152624", "label": "152624", "shape": "dot", "title": "152624 Neighbors:\u003cbr\u003e3200", "value": 1}, {"id": "93028", "label": "93028", "shape": "dot", "title": "93028 Neighbors:\u003cbr\u003e3200\u003cbr\u003e1926", "value": 2}, {"id": "88489", "label": "88489", "shape": "dot", "title": "88489 Neighbors:\u003cbr\u003e3200", "value": 1}, {"id": "75395", "label": "75395", "shape": "dot", "title": "75395 Neighbors:\u003cbr\u003e3200", "value": 1}, {"id": "173884", "label": "173884", "shape": "dot", "title": "173884 Neighbors:\u003cbr\u003e3200", "value": 1}, {"id": "51083", "label": "51083", "shape": "dot", "title": "51083 Neighbors:\u003cbr\u003e3200", "value": 1}, {"id": "92971", "label": "92971", "shape": "dot", "title": "92971 Neighbors:\u003cbr\u003e1926", "value": 1}, {"id": "74893", "label": "74893", "shape": "dot", "title": "74893 Neighbors:\u003cbr\u003e1926", "value": 1}, {"id": "122133", "label": "122133", "shape": "dot", "title": "122133 Neighbors:\u003cbr\u003e1926", "value": 1}, {"id": "75413", "label": "75413", "shape": "dot", "title": "75413 Neighbors:\u003cbr\u003e2928\u003cbr\u003e1926", "value": 2}, {"id": "70910", "label": "70910", "shape": "dot", "title": "70910 Neighbors:\u003cbr\u003e2928", "value": 1}, {"id": "103602", "label": "103602", "shape": "dot", "title": "103602 Neighbors:\u003cbr\u003e2928", "value": 1}, {"id": "124234", "label": "124234", "shape": "dot", "title": "124234 Neighbors:\u003cbr\u003e2928", "value": 1}, {"id": "45921", "label": "45921", "shape": "dot", "title": "45921 Neighbors:\u003cbr\u003e2928", "value": 1}, {"id": "119962", "label": "119962", "shape": "dot", "title": "119962 Neighbors:\u003cbr\u003e2928", "value": 1}, {"id": "86377", "label": "86377", "shape": "dot", "title": "86377 Neighbors:\u003cbr\u003e2928", "value": 1}, {"id": "117774", "label": "117774", "shape": "dot", "title": "117774 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "93090", "label": "93090", "shape": "dot", "title": "93090 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "130765", "label": "130765", "shape": "dot", "title": "130765 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "177967", "label": "177967", "shape": "dot", "title": "177967 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "139700", "label": "139700", "shape": "dot", "title": "139700 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "154366", "label": "154366", "shape": "dot", "title": "154366 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "161242", "label": "161242", "shape": "dot", "title": "161242 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "96387", "label": "96387", "shape": "dot", "title": "96387 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "78161", "label": "78161", "shape": "dot", "title": "78161 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "169347", "label": "169347", "shape": "dot", "title": "169347 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "174835", "label": "174835", "shape": "dot", "title": "174835 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "167697", "label": "167697", "shape": "dot", "title": "167697 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "97672", "label": "97672", "shape": "dot", "title": "97672 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "85579", "label": "85579", "shape": "dot", "title": "85579 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "166610", "label": "166610", "shape": "dot", "title": "166610 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "93727", "label": "93727", "shape": "dot", "title": "93727 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "117281", "label": "117281", "shape": "dot", "title": "117281 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "152156", "label": "152156", "shape": "dot", "title": "152156 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "104612", "label": "104612", "shape": "dot", "title": "104612 Neighbors:\u003cbr\u003e1101", "value": 1}, {"id": "146506", "label": "146506", "shape": "dot", "title": "146506 Neighbors:\u003cbr\u003e1122", "value": 1}, {"id": "158112", "label": "158112", "shape": "dot", "title": "158112 Neighbors:\u003cbr\u003e1345", "value": 1}, {"id": "146459", "label": "146459", "shape": "dot", "title": "146459 Neighbors:\u003cbr\u003e1121", "value": 1}, {"id": "27219", "label": "27219", "shape": "dot", "title": "27219 Neighbors:\u003cbr\u003e1250", "value": 1}, {"id": "82080", "label": "82080", "shape": "dot", "title": "82080 Neighbors:\u003cbr\u003e1250", "value": 1}, {"id": "34093", "label": "34093", "shape": "dot", "title": "34093 Neighbors:\u003cbr\u003e1250", "value": 1}, {"id": "65991", "label": "65991", "shape": "dot", "title": "65991 Neighbors:\u003cbr\u003e1250", "value": 1}, {"id": "146485", "label": "146485", "shape": "dot", "title": "146485 Neighbors:\u003cbr\u003e984\u003cbr\u003e1250", "value": 2}, {"id": "87232", "label": "87232", "shape": "dot", "title": "87232 Neighbors:\u003cbr\u003e1250", "value": 1}, {"id": "89667", "label": "89667", "shape": "dot", "title": "89667 Neighbors:\u003cbr\u003e984", "value": 1}, {"id": "164172", "label": "164172", "shape": "dot", "title": "164172 Neighbors:\u003cbr\u003e984", "value": 1}, {"id": "134895", "label": "134895", "shape": "dot", "title": "134895 Neighbors:\u003cbr\u003e984", "value": 1}, {"id": "159877", "label": "159877", "shape": "dot", "title": "159877 Neighbors:\u003cbr\u003e1601", "value": 1}, {"id": "136034", "label": "136034", "shape": "dot", "title": "136034 Neighbors:\u003cbr\u003e2921", "value": 1}, {"id": "74123", "label": "74123", "shape": "dot", "title": "74123 Neighbors:\u003cbr\u003e2921", "value": 1}, {"id": "158178", "label": "158178", "shape": "dot", "title": "158178 Neighbors:\u003cbr\u003e672", "value": 1}, {"id": "163608", "label": "163608", "shape": "dot", "title": "163608 Neighbors:\u003cbr\u003e672", "value": 1}, {"id": "144314", "label": "144314", "shape": "dot", "title": "144314 Neighbors:\u003cbr\u003e672", "value": 1}, {"id": "122457", "label": "122457", "shape": "dot", "title": "122457 Neighbors:\u003cbr\u003e672", "value": 1}, {"id": "164173", "label": "164173", "shape": "dot", "title": "164173 Neighbors:\u003cbr\u003e672", "value": 1}, {"id": "51807", "label": "51807", "shape": "dot", "title": "51807 Neighbors:\u003cbr\u003e3387", "value": 1}, {"id": "40034", "label": "40034", "shape": "dot", "title": "40034 Neighbors:\u003cbr\u003e3387", "value": 1}, {"id": "126032", "label": "126032", "shape": "dot", "title": "126032 Neighbors:\u003cbr\u003e3387", "value": 1}, {"id": "34486", "label": "34486", "shape": "dot", "title": "34486 Neighbors:\u003cbr\u003e3387", "value": 1}, {"id": "38420", "label": "38420", "shape": "dot", "title": "38420 Neighbors:\u003cbr\u003e3387", "value": 1}, {"id": "68944", "label": "68944", "shape": "dot", "title": "68944 Neighbors:\u003cbr\u003e3387", "value": 1}, {"id": "64191", "label": "64191", "shape": "dot", "title": "64191 Neighbors:\u003cbr\u003e3387", "value": 1}, {"id": "19521", "label": "19521", "shape": "dot", "title": "19521 Neighbors:\u003cbr\u003e3387", "value": 1}, {"id": "90597", "label": "90597", "shape": "dot", "title": "90597 Neighbors:\u003cbr\u003e3387", "value": 1}, {"id": "17416", "label": "17416", "shape": "dot", "title": "17416 Neighbors:\u003cbr\u003e3387", "value": 1}, {"id": "143490", "label": "143490", "shape": "dot", "title": "143490 Neighbors:\u003cbr\u003e1261", "value": 1}]);
+        edges = new vis.DataSet([{"from": "161967", "to": "793"}, {"from": "161967", "to": "686"}, {"from": "161967", "to": "1656"}, {"from": "161967", "to": "1353"}, {"from": "161967", "to": "982"}, {"from": "161967", "to": "2932"}, {"from": "161967", "to": "1511"}, {"from": "167651", "to": "2623"}, {"from": "167651", "to": "151"}, {"from": "167651", "to": "2392"}, {"from": "167651", "to": "693"}, {"from": "167651", "to": "3351"}, {"from": "175322", "to": "3027"}, {"from": "175322", "to": "249"}, {"from": "175322", "to": "3200"}, {"from": "175322", "to": "1353"}, {"from": "156464", "to": "1730"}, {"from": "156464", "to": "11"}, {"from": "156464", "to": "2685"}, {"from": "156464", "to": "2862"}, {"from": "130966", "to": "1926"}, {"from": "130966", "to": "2928"}, {"from": "130966", "to": "1101"}, {"from": "130966", "to": "1122"}, {"from": "130966", "to": "1345"}, {"from": "130966", "to": "1353"}, {"from": "130966", "to": "1121"}, {"from": "177483", "to": "1250"}, {"from": "177483", "to": "1282"}, {"from": "174065", "to": "984"}, {"from": "174065", "to": "1601"}, {"from": "37886", "to": "1718"}, {"from": "37886", "to": "797"}, {"from": "37886", "to": "2921"}, {"from": "37886", "to": "3246"}, {"from": "154449", "to": "3287"}, {"from": "154449", "to": "672"}, {"from": "154449", "to": "1250"}, {"from": "154449", "to": "1186"}, {"from": "163788", "to": "2872"}, {"from": "163788", "to": "3387"}, {"from": "163788", "to": "1261"}, {"from": "793", "to": "47414"}, {"from": "793", "to": "62328"}, {"from": "793", "to": "121922"}, {"from": "793", "to": "157297"}, {"from": "793", "to": "39841"}, {"from": "793", "to": "65674"}, {"from": "793", "to": "59845"}, {"from": "793", "to": "48747"}, {"from": "793", "to": "93728"}, {"from": "793", "to": "72562"}, {"from": "793", "to": "35901"}, {"from": "793", "to": "37380"}, {"from": "793", "to": "19500"}, {"from": "793", "to": "15899"}, {"from": "793", "to": "146469"}, {"from": "793", "to": "52548"}, {"from": "793", "to": "101901"}, {"from": "793", "to": "137952"}, {"from": "793", "to": "81128"}, {"from": "686", "to": "166092"}, {"from": "686", "to": "109778"}, {"from": "686", "to": "89606"}, {"from": "686", "to": "64918"}, {"from": "686", "to": "52074"}, {"from": "686", "to": "73376"}, {"from": "686", "to": "53741"}, {"from": "686", "to": "75724"}, {"from": "686", "to": "67034"}, {"from": "686", "to": "129051"}, {"from": "686", "to": "144280"}, {"from": "686", "to": "153580"}, {"from": "1656", "to": "120102"}, {"from": "1656", "to": "45919"}, {"from": "1656", "to": "113353"}, {"from": "1656", "to": "106547"}, {"from": "1656", "to": "89361"}, {"from": "1353", "to": "91434"}, {"from": "1353", "to": "132996"}, {"from": "982", "to": "129394"}, {"from": "2623", "to": "122984"}, {"from": "2623", "to": "122195"}, {"from": "2623", "to": "93756"}, {"from": "2623", "to": "89606"}, {"from": "2623", "to": "74315"}, {"from": "2623", "to": "51317"}, {"from": "2623", "to": "153651"}, {"from": "2623", "to": "124013"}, {"from": "2623", "to": "94775"}, {"from": "2623", "to": "83893"}, {"from": "2623", "to": "85578"}, {"from": "2623", "to": "83084"}, {"from": "2623", "to": "68616"}, {"from": "2623", "to": "58085"}, {"from": "2623", "to": "75396"}, {"from": "2623", "to": "106547"}, {"from": "151", "to": "73376"}, {"from": "151", "to": "153642"}, {"from": "151", "to": "105501"}, {"from": "151", "to": "88225"}, {"from": "151", "to": "160749"}, {"from": "151", "to": "129392"}, {"from": "151", "to": "67769"}, {"from": "693", "to": "160749"}, {"from": "693", "to": "180169"}, {"from": "249", "to": "72712"}, {"from": "3200", "to": "60753"}, {"from": "3200", "to": "151241"}, {"from": "3200", "to": "158191"}, {"from": "3200", "to": "100399"}, {"from": "3200", "to": "52072"}, {"from": "3200", "to": "65067"}, {"from": "3200", "to": "150637"}, {"from": "3200", "to": "50176"}, {"from": "3200", "to": "152170"}, {"from": "3200", "to": "51957"}, {"from": "3200", "to": "152624"}, {"from": "3200", "to": "93028"}, {"from": "3200", "to": "88489"}, {"from": "3200", "to": "75395"}, {"from": "3200", "to": "173884"}, {"from": "3200", "to": "51083"}, {"from": "1926", "to": "92971"}, {"from": "1926", "to": "74893"}, {"from": "1926", "to": "122133"}, {"from": "1926", "to": "93028"}, {"from": "1926", "to": "67034"}, {"from": "1926", "to": "75413"}, {"from": "1926", "to": "137952"}, {"from": "2928", "to": "70910"}, {"from": "2928", "to": "103602"}, {"from": "2928", "to": "52072"}, {"from": "2928", "to": "91434"}, {"from": "2928", "to": "124234"}, {"from": "2928", "to": "45921"}, {"from": "2928", "to": "75413"}, {"from": "2928", "to": "119962"}, {"from": "2928", "to": "86377"}, {"from": "1101", "to": "117774"}, {"from": "1101", "to": "93090"}, {"from": "1101", "to": "130765"}, {"from": "1101", "to": "177967"}, {"from": "1101", "to": "139700"}, {"from": "1101", "to": "154366"}, {"from": "1101", "to": "161242"}, {"from": "1101", "to": "96387"}, {"from": "1101", "to": "78161"}, {"from": "1101", "to": "169347"}, {"from": "1101", "to": "174835"}, {"from": "1101", "to": "167697"}, {"from": "1101", "to": "97672"}, {"from": "1101", "to": "85579"}, {"from": "1101", "to": "160749"}, {"from": "1101", "to": "166610"}, {"from": "1101", "to": "93727"}, {"from": "1101", "to": "117281"}, {"from": "1101", "to": "152156"}, {"from": "1101", "to": "104612"}, {"from": "1122", "to": "146506"}, {"from": "1345", "to": "158112"}, {"from": "1121", "to": "146459"}, {"from": "1250", "to": "27219"}, {"from": "1250", "to": "82080"}, {"from": "1250", "to": "34093"}, {"from": "1250", "to": "65991"}, {"from": "1250", "to": "146485"}, {"from": "1250", "to": "37380"}, {"from": "1250", "to": "87232"}, {"from": "984", "to": "89667"}, {"from": "984", "to": "164172"}, {"from": "984", "to": "134895"}, {"from": "984", "to": "146485"}, {"from": "1601", "to": "159877"}, {"from": "2921", "to": "136034"}, {"from": "2921", "to": "74123"}, {"from": "3287", "to": "158191"}, {"from": "672", "to": "158178"}, {"from": "672", "to": "163608"}, {"from": "672", "to": "144314"}, {"from": "672", "to": "122457"}, {"from": "672", "to": "153642"}, {"from": "672", "to": "164173"}, {"from": "672", "to": "146469"}, {"from": "3387", "to": "51807"}, {"from": "3387", "to": "40034"}, {"from": "3387", "to": "126032"}, {"from": "3387", "to": "34486"}, {"from": "3387", "to": "38420"}, {"from": "3387", "to": "68944"}, {"from": "3387", "to": "64191"}, {"from": "3387", "to": "19521"}, {"from": "3387", "to": "90597"}, {"from": "3387", "to": "17416"}, {"from": "1261", "to": "143490"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        // default to using dot shape for nodes
+        options.nodes = {
+            shape: "dot"
+        }
+        
+
+        network = new vis.Network(container, data, options);
+
+        
+
+
+        
+        network.on("stabilizationProgress", function(params) {
+      		document.getElementById('loadingBar').removeAttribute("style");
+	        var maxWidth = 496;
+	        var minWidth = 20;
+	        var widthFactor = params.iterations/params.total;
+	        var width = Math.max(minWidth,maxWidth * widthFactor);
+
+	        document.getElementById('bar').style.width = width + 'px';
+	        document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+	    });
+	    network.once("stabilizationIterationsDone", function() {
+	        document.getElementById('text').innerHTML = '100%';
+	        document.getElementById('bar').style.width = '496px';
+	        document.getElementById('loadingBar').style.opacity = 0;
+	        // really clean the dom element
+	        setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+	    });
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>
